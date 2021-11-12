@@ -1,4 +1,4 @@
-part of 'product_bloc.dart';
+part of 'category_bloc.dart';
 @immutable
 abstract class CategoryEvent extends Equatable {
   const CategoryEvent();

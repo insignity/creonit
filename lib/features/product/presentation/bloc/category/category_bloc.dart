@@ -5,8 +5,8 @@ import 'package:creonit/features/product/domain/entities/category_entity.dart';
 import 'package:creonit/features/product/domain/usecases/get_all_categories.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
-part 'product_event.dart';
-part 'product_state.dart';
+part 'category_event.dart';
+part 'category_state.dart';
 
 const serverFailureMessage = 'Server Failure';
 const cacheFailureMessage = 'Cache Failure';
@@ -19,7 +19,6 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
 
   @override
   Stream<CategoryState> mapEventToState(CategoryEvent event) async* {
-
     if (event is CategoryLoad) {
       yield* _mapFetchCategoriesToState();
     }
@@ -28,11 +27,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   Stream<CategoryState> _mapFetchCategoriesToState() async* {
     if (state is CategoryLoading) return;
     final currentState = state;
-
-    var oldCategories = <CategoryEntity>[];
-    if (currentState is CategoryLoaded) {
-      oldCategories = currentState.categories;
-    }
+    if (currentState is CategoryLoaded) {}
 
     yield CategoryLoading(isFirstPage: page == 1);
 

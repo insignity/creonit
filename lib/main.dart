@@ -1,8 +1,10 @@
-import 'package:creonit/features/product/presentation/bloc/product_bloc.dart';
+import 'package:creonit/features/product/presentation/bloc/products/product_bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'features/product/presentation/bloc/category/category_bloc.dart';
 import 'features/product/presentation/pages/home_page.dart';
 import 'locator_service.dart' as di;
 import 'locator_service.dart';
@@ -16,7 +18,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -24,12 +25,13 @@ class MyApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<CategoryBloc>(create: (context) => sl<CategoryBloc>())
+        BlocProvider<CategoryBloc>(create: (context) => sl<CategoryBloc>()),
+        BlocProvider<ProductBloc>(create: (context) => sl<ProductBloc>()),
       ],
-      child: MaterialApp(
+      child: const CupertinoApp(
+        debugShowCheckedModeBanner: false,
         title: 'Creonit',
-        theme: ThemeData(),
-        home: const HomePage(),
+        home: HomePage(),
       ),
     );
   }
