@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<CategoryBloc>(create: (context) => sl<CategoryBloc>()),
-        BlocProvider<ProductBloc>(create: (context) => sl<ProductBloc>()),
+        BlocProvider<CategoryBloc>(create: (context) => sl<CategoryBloc>()..getAllCategories),
+        BlocProvider<ProductBloc>(create: (context) => sl<ProductBloc>()..getAllProducts),
       ],
       child: const CupertinoApp(
         debugShowCheckedModeBanner: false,

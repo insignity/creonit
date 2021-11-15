@@ -15,16 +15,16 @@ class ProductRepositoryImpl implements ProductRepository {
 
   @override
   Future<Either<Failure, List<ProductEntity>>> getProductsByCategory(
-      int categoryId) async {
+      int categoryId, int page) async {
     return _getProducts(() {
-      return remoteDataSource.getProductsByCategory(categoryId);
+      return remoteDataSource.getProductsByCategory(categoryId, page);
     });
   }
 
   @override
-  Future<Either<Failure, List<ProductEntity>>> getAllProducts() async {
+  Future<Either<Failure, List<ProductEntity>>> getAllProducts(int page) async {
     return _getProducts(() {
-      return remoteDataSource.getAllProducts();
+      return remoteDataSource.getAllProducts(page);
     });
   }
 

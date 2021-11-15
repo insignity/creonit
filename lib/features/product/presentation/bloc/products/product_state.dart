@@ -8,10 +8,12 @@ class ProductEmpty extends ProductState {
 
 class ProductLoading extends ProductState {
   final bool isFirstPage;
+  final List<ProductEntity> oldProductsList;
 
-  ProductLoading( {this.isFirstPage = false});
+  ProductLoading(this.oldProductsList, {this.isFirstPage = false});
+  
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [oldProductsList];
 }
 
 class ProductLoaded extends ProductState {

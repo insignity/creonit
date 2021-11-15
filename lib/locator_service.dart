@@ -4,6 +4,7 @@ import 'package:creonit/features/product/data/repositories/product_repository_im
 import 'package:creonit/features/product/domain/repositories/category_repository.dart';
 import 'package:creonit/features/product/domain/repositories/product_repository.dart';
 import 'package:creonit/features/product/domain/usecases/get_all_categories.dart';
+import 'package:creonit/features/product/domain/usecases/get_all_products.dart';
 import 'package:creonit/features/product/domain/usecases/get_products_by_category.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -23,11 +24,11 @@ Future init() async {
   // BLoC / Cubit
   sl.registerFactory(() => CategoryBloc(getAllCategories: sl()));
   sl.registerFactory(
-    () => ProductBloc(getProductsByCategory: sl()),
-  );
+      () => ProductBloc(getProductsByCategory: sl(), getAllProducts: sl()));
 
   // UseCases
   sl.registerLazySingleton(() => GetAllCategories(sl()));
+  sl.registerLazySingleton(() => GetAllProducts(sl()));
   sl.registerLazySingleton(() => GetProductsByCategory(sl()));
 
   // Repository

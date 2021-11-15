@@ -12,16 +12,17 @@ class GetProductsByCategory extends UseCaseParams<List<ProductEntity>,  ProductP
   GetProductsByCategory(this.productRepository);
 
   @override
-  Future<Either<Failure, List<ProductEntity>>> call(ProductParams productParams) async {
+  Future<Either<Failure, List<ProductEntity>>> call(ProductParams params) async {
     print('usecase');
-    return await productRepository.getProductsByCategory(productParams.categoryId);
+    return await productRepository.getProductsByCategory(params.categoryId, params.page);
   }
 }
 
 class ProductParams extends Equatable{
   final int categoryId;
+  final int page;
 
-  const ProductParams({required this.categoryId});
+  const ProductParams({required this.categoryId, required this.page});
 
   @override
   List<Object?> get props => [categoryId];

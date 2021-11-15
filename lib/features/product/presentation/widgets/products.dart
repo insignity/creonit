@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:creonit/common/app_colors.dart';
 import 'package:creonit/common/text_style.dart';
 import 'package:creonit/features/product/domain/entities/category_entity.dart';
@@ -7,23 +9,50 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Products extends StatelessWidget {
+class Products extends StatefulWidget {
   final CategoryEntity category;
   const Products({required this.category, Key? key}) : super(key: key);
 
   @override
+  State<Products> createState() => _ProductsState();
+}
+
+class _ProductsState extends State<Products> {
+  @override
+  void initState() {
+
+
+    BlocProvider.of<ProductBloc>(context).add(widget.category.id == 0
+        ? const ProductEventLoadAll()
+        : ProductEventLoadByCategory(categoryid: widget.category.id));
+    super.initState();
+  }
+
+  final scrollController = ScrollController();
+
+  void setupScrollController(BuildContext context) {
+    scrollController.addListener(() {
+      if (scrollController.position.atEdge) {
+        if (scrollController.position.pixels != 0) {
+          BlocProvider.of<ProductBloc>(context).add(widget.category.id == 0
+              ? const ProductEventLoadAll()
+              : ProductEventLoadByCategory(categoryid: widget.category.id));
+        }
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    BlocProvider.of<ProductBloc>(context, listen: false)
-        .add(ProductEventLoadByCategory(categoryid: category.id));
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         List<ProductEntity> products = [];
         bool isLoading = false;
-
         if (state is ProductLoading && state.isFirstPage) {
           return _loadingIndicator();
         } else if (state is ProductLoading) {
           isLoading = true;
+          products = state.oldProductsList;
         } else if (state is ProductLoaded) {
           products = state.products;
         } else if (state is ProductError) {
@@ -35,22 +64,26 @@ class Products extends StatelessWidget {
         return Column(
           children: [
             _productsTopBar(),
-            Divider(),
+            const Divider(),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GridView.builder(
+                  controller: scrollController,
                   itemBuilder: (context, index) {
                     if (index < products.length) {
                       return GestureDetector(
                         onTap: () {},
                         child: _productItem(products[index], context,
-                            hit: (index % 3 == 0) ? true : false,
-                            finished: (index % 3 == 2) ? true : false,
-                            sale: (index % 2 == 1) ? 250 : 0
-                            ),
+                            hit: (index % 50 == 0) ? true : false,
+                            finished: (index % 50 == 2) ? true : false,
+                            sale: (index % 50 == 1) ? 1 : 0),
                       );
                     } else {
+                      // Timer(const Duration(milliseconds: 30), () {
+                      //   scrollController
+                      //       .jumpTo(scrollController.position.maxScrollExtent);
+                      // });
                       return _loadingIndicator();
                     }
                   },
@@ -178,13 +211,13 @@ class Products extends StatelessWidget {
                     ),
                     if (sale > 0)
                       Padding(
-                        padding: const EdgeInsets.only(left:8.0),
+                        padding: const EdgeInsets.only(left: 8.0),
                         child: Text(
                           (product.price + sale).toString() + ' ₽',
                           style: Style.textPriceCrossed,
                         ),
                       ),
-                      Spacer(),
+                    Spacer(),
                     finished
                         ? Text('ЗАКОНЧИЛСЯ', style: Style.textProductFinished)
                         : SvgPicture.asset(

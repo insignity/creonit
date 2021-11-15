@@ -37,11 +37,14 @@ class Categories extends StatelessWidget {
                 if (index < categories.length + 1) {
                   if (index == 0) {
                     return GestureDetector(
-                      onTap: (){},/*  => Navigator.push(
+                      onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: ((context) =>
-                                  Products(category: categories[index])))), */
+                              builder: ((context) => Products(
+                                  category: const CategoryEntity(
+                                      id: 0,
+                                      title: 'Все товары категории',
+                                      slug: 'all-categies'))))),
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(0, 16, 0, 12),
                         child: Row(
