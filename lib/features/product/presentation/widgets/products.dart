@@ -27,15 +27,12 @@ class _ProductsState extends State<Products> {
   }
 
   final scrollController = ScrollController();
+  List<bool> bought = List.generate(10000, (index) => false);
 
   void setupScrollController(BuildContext context) {
-    print('scroll controller');
     scrollController.addListener(() {
-      print('scroll controller added listener');
       if (scrollController.position.atEdge) {
-        print('scroll controller position at edge');
         if (scrollController.position.pixels != 0) {
-          print('scroll controller position pisels != 0');
           BlocProvider.of<ProductBloc>(context).add(widget.category.id == 0
               ? const ProductEventLoadAll()
               : ProductEventLoadByCategory(categoryid: widget.category.id));
@@ -50,6 +47,7 @@ class _ProductsState extends State<Products> {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         List<ProductEntity> products = [];
+
         bool isLoading = false;
         if (state is ProductLoading && state.isFirstPage) {
           return _loadingIndicator();
@@ -77,10 +75,14 @@ class _ProductsState extends State<Products> {
                     if (index < products.length) {
                       return GestureDetector(
                         onTap: () {},
-                        child: _productItem(products[index], context,
-                            hit: (index % 50 == 0) ? true : false,
-                            finished: (index % 50 == 2) ? true : false,
-                            sale: (index % 50 == 1) ? 1 : 0),
+                        child: _productItem(
+                          products[index],
+                          context,
+                          hit: (index % 50 == 0) ? true : false,
+                          finished: (index % 50 == 2) ? true : false,
+                          sale: (index % 50 == 1) ? 1 : 0,
+                          index: index,
+                        ),
                       );
                     } else {
                       Timer(const Duration(milliseconds: 30), () {
@@ -150,7 +152,10 @@ class _ProductsState extends State<Products> {
   }
 
   Widget _productItem(ProductEntity product, BuildContext context,
-      {bool hit = false, bool finished = false, int sale = 0}) {
+      {bool hit = false,
+      bool finished = false,
+      int sale = 0,
+      int index = 10000}) {
     return Container(
         padding: const EdgeInsets.fromLTRB(7, 0, 7, 32),
         child: Column(
@@ -220,13 +225,23 @@ class _ProductsState extends State<Products> {
                           style: Style.textPriceCrossed,
                         ),
                       ),
-                    Spacer(),
+                    const Spacer(),
                     finished
-                        ? Text('ЗАКОНЧИЛСЯ', style: Style.textProductFinished)
-                        : SvgPicture.asset(
-                            'assets/icons/cart_dark.svg',
-                            color: AppColors.primaryBlack,
-                          ),
+                        ? const Text('ЗАКОНЧИЛСЯ',
+                            style: Style.textProductFinished)
+                        : bought[index]
+                            ? const Flexible(
+                                child: Text('В КОРЗИНУ',
+                                    style: Style.textProductFinished),
+                              )
+                            : GestureDetector(
+                                child: SvgPicture.asset(
+                                  'assets/icons/cart_dark.svg',
+                                  color: AppColors.primaryBlack,
+                                ),
+                                onTap: () => setState(() {
+                                      bought[index] = true;
+                                    })),
                   ],
                 )),
 
