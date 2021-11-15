@@ -20,8 +20,6 @@ class Products extends StatefulWidget {
 class _ProductsState extends State<Products> {
   @override
   void initState() {
-
-
     BlocProvider.of<ProductBloc>(context).add(widget.category.id == 0
         ? const ProductEventLoadAll()
         : ProductEventLoadByCategory(categoryid: widget.category.id));
@@ -31,9 +29,13 @@ class _ProductsState extends State<Products> {
   final scrollController = ScrollController();
 
   void setupScrollController(BuildContext context) {
+    print('scroll controller');
     scrollController.addListener(() {
+      print('scroll controller added listener');
       if (scrollController.position.atEdge) {
+        print('scroll controller position at edge');
         if (scrollController.position.pixels != 0) {
+          print('scroll controller position pisels != 0');
           BlocProvider.of<ProductBloc>(context).add(widget.category.id == 0
               ? const ProductEventLoadAll()
               : ProductEventLoadByCategory(categoryid: widget.category.id));
@@ -44,6 +46,7 @@ class _ProductsState extends State<Products> {
 
   @override
   Widget build(BuildContext context) {
+    setupScrollController(context);
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         List<ProductEntity> products = [];
@@ -80,10 +83,10 @@ class _ProductsState extends State<Products> {
                             sale: (index % 50 == 1) ? 1 : 0),
                       );
                     } else {
-                      // Timer(const Duration(milliseconds: 30), () {
-                      //   scrollController
-                      //       .jumpTo(scrollController.position.maxScrollExtent);
-                      // });
+                      Timer(const Duration(milliseconds: 30), () {
+                        scrollController
+                            .jumpTo(scrollController.position.maxScrollExtent);
+                      });
                       return _loadingIndicator();
                     }
                   },
